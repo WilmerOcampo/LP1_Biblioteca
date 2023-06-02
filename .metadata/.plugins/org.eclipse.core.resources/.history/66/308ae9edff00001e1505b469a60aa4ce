@@ -1,0 +1,218 @@
+package models;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
+
+import util.MYSQLConexion;
+
+public class ModeloAlumno {
+
+    public static List<Alumno> getAlumnos() throws Exception {
+        List<Alumno> alumnos = new ArrayList<>();
+        Connection miConexion = null;
+        Statement miStatement = null;
+        ResultSet miResultSet = null;
+
+        try {
+            miConexion = MYSQLConexion.getConexion();
+
+            String instruccionSQL = "SELECT * FROM alumno";
+            miStatement = miConexion.createStatement();
+            miResultSet = miStatement.executeQuery(instruccionSQL);
+
+            while (miResultSet.next()) {
+                String idAlumno = miResultSet.getString("idalumno");
+                String nombre = miResultSet.getString("nombrealumno");
+                String apellido = miResultSet.getString("apellidoalumno");
+                String direccion = miResultSet.getString("direccion");
+                String telefono = miResultSet.getString("telefono");
+                String email = miResultSet.getString("email");
+
+                Alumno temporal = new Alumno(idAlumno, nombre, apellido, direccion, telefono, email);
+                alumnos.add(temporal);
+            }
+        } finally {
+            if (miResultSet != null) {
+                miResultSet.close();
+            }
+            if (miStatement != null) {
+                miStatement.close();
+            }
+            if (miConexion != null) {
+                miConexion.close();
+            }
+        }
+        return alumnos;
+    }
+
+    public static void addAlumno(Alumno nuevoAlumno) throws Exception {
+        try (Connection miConexion = MYSQLConexion.getConexion();
+                PreparedStatement miStatement = miConexion.prepareStatement("INSERT INTO alumno (idAlumno, nombrealumno, apellidoalumno, direccion, telefono, email) VALUES (?,?,?,?,?,?)")) {
+
+            miStatement.setString(1, nuevoAlumno.getIdalumno());
+            miStatement.setString(2, nuevoAlumno.getNombrealumno());
+            miStatement.setString(3, nuevoAlumno.getApellidoalumno());
+            miStatement.setString(4, nuevoAlumno.getDireccion());
+            miStatement.setString(5, nuevoAlumno.getTelefono());
+            miStatement.setString(6, nuevoAlumno.getEmail());
+
+            miStatement.execute();
+        }
+    }
+
+    public static Alumno getAlumno(String idalumno) throws Exception {
+        Alumno elAlumno = null;
+        Connection miConexion = null;
+        PreparedStatement miStatement = null;
+        ResultSet miResulSet = null;
+
+        try {
+            miConexion = MYSQLConexion.getConexion();
+            String sql = "SELECT * FROM alumno WHERE idAlumno = ?";
+            miStatement = miConexion.prepareStatement(sql);
+            miStatement.setString(1, idalumno);
+            miResulSet = miStatement.executeQuery();
+
+            if (miResulSet.next()) {
+            	String id = miResulSet.getString("idalumno");
+                String nombre = miResulSet.getString("nombrealumno");
+                String apellido = miResulSet.getString("apellidoalumno");
+                String direccion = miResulSet.getString("direccion");
+                String telefono = miResulSet.getString("telefono");
+                String email = miResulSet.getString("email");
+
+                elAlumno = new Alumno(id, nombre, apellido, direccion, telefono, email);
+            } else {
+                throw new Exception("No se encontró el alumno con ID " + idalumno);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (miResulSet != null) {
+                try {
+                    miResulSet.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (miStatement != null) {
+                try {
+                    miStatement.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (miConexion != null) {
+                try {
+                    miConexion.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return elAlumno;
+    }
+
+    /*public static void actualizarAlumno(Alumno alumnoActualizado) throws Exception {
+        try (Connection miConexion = MYSQLConexion.getConexion();
+                PreparedStatement miStatement = miConexion.prepareStatement("UPDATE alumno SET nombrealumno = ?, apellidoalumno = ?, direccion = ?, telefono = ?, email = ? WHERE idAlumno = ?")) {
+
+            miStatement.setString(1, alumnoActualizado.getNombrealumno());
+            miStatement.setString(2, alumnoActualizado.getApellidoalumno());
+            miStatement.setString(3, alumnoActualizado.getDireccion());
+            miStatement.setString(4, alumnoActualizado.getTelefono());
+            miStatement.setString(5, alumnoActualizado.getEmail());
+            miStatement.setString(6, alumnoActualizado.getIdalumno());
+
+            int filasActualizadas = miStatement.executeUpdate();
+
+            if (filasActualizadas > 0) {
+                System.out.println("Alumno actualizado correctamente.");
+            } else {
+                System.out.println("No se encontró el alumno o no se realizó ninguna actualización.");
+            }
+        }
+    }*/
+    
+	public static void actualizarAlumno(Alumno alumnoActualizado) throws Exception {
+		Connection miConexion = null;
+		PreparedStatement miStatement = null;
+
+		try {
+			miConexion = MYSQLConexion.getConexion();
+
+			String sql = "UPDATE alumno SET nombreAlumno = ?, apellidoAlumno = ?, direccion = ?, telefono = ?, email = ? WHERE idAlumno = ?";
+			
+			miStatement = miConexion.prepareStatement(sql);
+			miStatement.setString(1, alumnoActualizado.getNombrealumno());
+			miStatement.setString(2, alumnoActualizado.getApellidoalumno());
+			miStatement.setString(3, alumnoActualizado.getDireccion());
+			miStatement.setString(4, alumnoActualizado.getTelefono());
+			miStatement.setString(5, alumnoActualizado.getEmail());
+			miStatement.setString(6, alumnoActualizado.getIdalumno());
+
+			int filasActualizadas = miStatement.executeUpdate();
+
+			if (filasActualizadas > 0) {
+				System.out.println("Alumno actualizado correctamente.");
+			} else {
+				System.out.println("No se encontró el Alumno o no se realizó ninguna actualización.");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			// Manejo de excepciones
+		} finally {
+			// Cerrar recursos en el orden inverso de su apertura
+			if (miStatement != null) {
+				try {
+					miStatement.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+			if (miConexion != null) {
+				try {
+					miConexion.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+	}
+
+    public static void eliminarAlumno(String idalumno) throws Exception {
+    	Connection miConexion = null;
+		PreparedStatement miStatement = null;
+
+		try {
+			miConexion = MYSQLConexion.getConexion();
+
+			String sql = "DELETE FROM alumno WHERE idAlumno IS NULL OR idAlumno=?";
+
+			miStatement = miConexion.prepareStatement(sql);
+			miStatement.setString(1, idalumno);
+
+			miStatement.executeUpdate();
+		} finally {
+			// Cerrar los recursos (Statement y Connection) en un bloque finally
+			if (miStatement != null) {
+				miStatement.close();
+			}
+			if (miConexion != null) {
+				miConexion.close();
+			}
+		}
+    	
+    	/*try (Connection miConexion = MYSQLConexion.getConexion();
+                PreparedStatement miStatement = miConexion.prepareStatement("DELETE FROM alumno WHERE idAlumno = ?")) {
+
+            miStatement.setInt(1, idAlumno);
+            miStatement.executeUpdate();
+        }*/
+    }
+}

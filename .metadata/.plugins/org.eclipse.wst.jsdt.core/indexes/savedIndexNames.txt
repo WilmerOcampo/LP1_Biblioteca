@@ -1,0 +1,8 @@
+INDEX VERSION 1.4+D:\Cibertec - Laboratorio\Ciclo III - Laboratorio\Lenguaje de Programación I\PROYECTO - LENGUAJE PROGRAMACION I_2\LP1_Biblioteca\.metadata\.plugins\org.eclipse.wst.jsdt.core\indexes
+3016007069.index
+3040178403.index
+1351563854.index
+2875340108.index
+2266295473.index
+3895566254.index
+2179537226.index

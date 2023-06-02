@@ -1,0 +1,7 @@
+INDEX VERSION 1.131
+C:\Users\USER\Desktop\LP1_Biblioteca\.metadata\.plugins\org.eclipse.jst.jsp.core\jspsearch\1301207678.index
+\Proyecto\src\main\java
+D:\Cibertec - Laboratorio\Ciclo III - Laboratorio\Lenguaje de Programación I\PROYECTO - LENGUAJE PROGRAMACION I_2\LP1_Biblioteca\.metadata\.plugins\org.eclipse.jst.jsp.core\jspsearch\3040178403.index
+\Proyecto\src\main\java
+C:\Users\USER\Desktop\LP1_Biblioteca\.metadata\.plugins\org.eclipse.jst.jsp.core\jspsearch\3040178403.index
+\Proyecto\src\main\java

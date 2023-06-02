@@ -1,0 +1,92 @@
+package models;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+
+import util.MYSQLConexion;
+
+public class ModeloEmpleado {
+	/*MYSQLConexion cn = new MYSQLConexion();
+	Connection con;
+	PreparedStatement ps;
+	ResultSet rs;*/
+	
+	public Empleado validar(String idempleado, String pass) {
+		/*Empleado em = new Empleado();
+        Connection miConexion = null;
+        PreparedStatement miStatement = null;
+        ResultSet miResultSet = null;
+        
+        miConexion = MYSQLConexion.getConexion();
+        
+		String sql = "select * from empleados where idempleado=? and contrasenia=?";
+		try {
+			//con = cn.getConexion();
+			PreparedStatement = micone(sql);
+			ps.setString(1, idempleado);
+			ps.setString(2, pass);
+			rs = ps.executeQuery();
+			while (rs.next()) {
+				em.setIdEmpleado(rs.getString("idempleado"));
+				em.setNombreEmpleado(rs.getString("nombreempleado"));
+				em.setApellidoEmpleado(rs.getString("apellidoempleaod"));
+				em.setDireccion(rs.getString("direccion"));
+				em.setTelefono(rs.getString("telefono"));
+				em.setEmail(rs.getString("email"));
+				em.setDni(rs.getString("dni"));
+				em.setPass(rs.getString("contrasenia"));
+			}
+		} catch (Exception e) {
+			return em;
+		}
+		return em;*/
+		
+		Empleado em = null;
+		Connection miConexion = null;
+		PreparedStatement miStatement = null;
+		ResultSet miResultSet = null;
+
+		try {
+			miConexion = MYSQLConexion.getConexion();
+			String sql = "SELECT * FROM empleados WHERE idempleado=? AND contrasenia=?";
+			miStatement = miConexion.prepareStatement(sql);
+			miStatement.setString(1, idempleado);
+			miStatement.setString(2, pass);
+			miResultSet = miStatement.executeQuery();
+
+			if (miResultSet.next()) {
+				em = new Empleado();
+				em.setIdEmpleado(miResultSet.getString("idempleado"));
+				em.setNombreEmpleado(miResultSet.getString("nombreempleado"));
+				em.setApellidoEmpleado(miResultSet.getString("apellidoempleado"));
+				em.setDireccion(miResultSet.getString("direccion"));
+				em.setTelefono(miResultSet.getString("telefono"));
+				em.setEmail(miResultSet.getString("email"));
+				em.setDni(miResultSet.getString("dni"));
+				em.setPass(miResultSet.getString("contrasenia"));
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			// Cerrar conexiones y liberar recursos
+			try {
+				if (miResultSet != null) {
+					miResultSet.close();
+				}
+				if (miStatement != null) {
+					miStatement.close();
+				}
+				if (miConexion != null) {
+					miConexion.close();
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return em;
+	}
+
+}

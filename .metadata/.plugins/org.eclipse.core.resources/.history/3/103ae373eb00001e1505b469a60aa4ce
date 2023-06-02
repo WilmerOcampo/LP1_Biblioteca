@@ -1,0 +1,140 @@
+package servlets;
+
+import jakarta.servlet.RequestDispatcher;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import models.Libro;
+import models.ModeloLibro;
+
+import java.io.IOException;
+import java.util.List;
+
+@WebServlet("/ControladorLibros")
+public class ControladorLibros extends HttpServlet {
+	private static final long serialVersionUID = 1L;
+
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	    //Leer parámetro del formulario
+	    String elComando = request.getParameter("instruccion");
+	    //Si no se envía el parámetro, leer productos
+	    if (elComando == null)
+	        elComando = "listar";
+	    //Redirigir el flujo de ejecución al método adecuado
+	    switch (elComando) {
+	        case "listar":
+	            obtenerLibros(request, response);
+	            break;
+	        case "insertarBBDD":
+	            agregarLibros(request, response);
+	            break;
+	        case "cargar":
+	            try {
+	                cargarLibros(request, response);
+	            } catch (Exception e) {
+	                e.printStackTrace();
+	            }
+	            break;
+	        case "actualizarBBDD":
+	            try {
+	                actualizarLibros(request, response);
+	            } catch (Exception e) {
+	                e.printStackTrace();
+	            }
+	            break;
+	        case "eliminar":
+	            try {
+	                eliminarLibros(request, response);
+	            } catch (Exception e) {
+	                e.printStackTrace();
+	            }
+	            break;
+	        default:
+	            obtenerLibros(request, response);
+	    }
+	}
+
+	//========================================================================================================	
+	private void eliminarLibros(HttpServletRequest request, HttpServletResponse response) throws Exception {
+		String codLib = request.getParameter("idlibro");
+		System.out.println("idlibro essss " + codLib);
+		
+		ModeloLibro.eliminarLibro(codLib);
+		
+		obtenerLibros(request, response);
+	}
+
+	//========================================================================================================
+	private void actualizarLibros(HttpServletRequest request, HttpServletResponse response) throws Exception {
+	    //int codigo = Integer.parseInt(request.getParameter("codigo"));
+		String idlibro = request.getParameter("idlibro");
+	    String titulo = request.getParameter("titulo");
+	    String autor = request.getParameter("autor");
+	    String editorial = request.getParameter("editorial");
+	    int stock = Integer.parseInt(request.getParameter("stock"));
+	    String estado = request.getParameter("estado");
+
+	    Libro LibroActualizado = new Libro(idlibro, titulo, autor, editorial, stock, estado);
+
+	    ModeloLibro.actualizarLibros(LibroActualizado);
+
+	    obtenerLibros(request, response);
+	}
+
+	//========================================================================================================
+	private void cargarLibros(HttpServletRequest request, HttpServletResponse response) throws Exception {
+	    String codLib = request.getParameter("idlibro");
+	    System.out.println("idlibro es " + codLib);
+	    
+	    Libro elLibro = ModeloLibro.getLibro(codLib);
+	    
+	    request.setAttribute("UpdateLibro", elLibro);
+	    
+	    RequestDispatcher dispatcher = request.getRequestDispatcher("/editarLibro.jsp");
+	    dispatcher.forward(request, response);
+	}
+
+	//========================================================================================================	
+	private void agregarLibros(HttpServletRequest request, HttpServletResponse response) {
+	    try {
+	        //int codigo = Integer.parseInt(request.getParameter("codigo"));
+	    	String idlibro = request.getParameter("idlibro");
+	        String titulo = request.getParameter("titulo");
+	        String autor = request.getParameter("autor");
+	        String editorial = request.getParameter("editorial");
+	        int stock = Integer.parseInt(request.getParameter("stock"));
+	        String estado = request.getParameter("estado");
+	        //System.out.println("Llegué acá");
+	    	
+	        Libro nuevoLibro = new Libro(idlibro, titulo, autor, editorial, stock, estado);
+	        
+	        ModeloLibro.addLibro(nuevoLibro);
+
+	        obtenerLibros(request, response);
+	        //System.out.println("Llegué acá");
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    }
+	}
+
+	//========================================================================================================	
+	private void obtenerLibros(HttpServletRequest request, HttpServletResponse response) {
+	    try {
+	        List<Libro> libros = ModeloLibro.getLibros();
+	        request.setAttribute("ListarLibros", libros);
+	        RequestDispatcher miDispatcher = request.getRequestDispatcher("/listaLibros.jsp");
+	        miDispatcher.forward(request, response);
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    }
+	}
+
+	//========================================================================================================
+	
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		doGet(request, response);
+	}
+
+}

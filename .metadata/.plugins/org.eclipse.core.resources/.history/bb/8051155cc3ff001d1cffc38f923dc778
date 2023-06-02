@@ -1,0 +1,114 @@
+<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
+    pageEncoding="ISO-8859-1"%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
+<title>Index</title>
+</head>
+<body>
+
+    <nav class="navbar navbar-expand-md navbar-dark bg-dark data-bs-theme="dark"" style="display: flex; justify-content: space-evenly; ">
+        <div class="container-fluid">
+        <!-- icono o nombre -->
+        <a class="navbar-brand" href="#" style="padding-left: 3rem; padding-right: 3rem;">
+          <i class="bi bi-book" style="font-size: 2rem"></i>
+          <span style="font-size: 2rem"><b>CiberBiblioteca</b></span>
+        </a>           
+        
+        <!-- boton del menu -->
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menu" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+          <!-- elementos del menu colapsable -->
+        <div class="collapse navbar-collapse" id="menu" style="font-size: 18px">
+          <ul class="navbar-nav me-auto">
+            <li class="nav-item" style="margin:0 0.5rem">
+              <a class="nav-link active" aria-current="page" href="#">Inicio</a>
+            </li>
+            <li class="nav-item" style="margin:0 0.5rem">
+              <a class="nav-link" href="#">Libros</a>
+            </li>
+            <li class="nav-item" style="margin:0 0.5rem">
+              <a class="nav-link" href="#">Empleados</a>
+            </li>
+            <li class="nav-item" style="margin:0 0.5rem">
+              <a class="nav-link" href="#">Prestamos</a>
+            </li>
+            <li class="nav-item" style="margin:0 0.5rem">
+              <a class="nav-link" href="#">Alumnos</a>
+            </li>
+          
+         <!--boton Informacion -->
+          <form class="d-flex">
+            <button class="btn btn-outline-warning d-none d-md-inline-block " type="submit" style="float:right;">Cerrar Sesion</button>
+          </form>              
+        </div>
+        </div>  
+      </nav>
+
+    <div class="container mt-5">
+        <div class="row">
+            <div class="col">
+                <div id="carouselNovedades" class="carousel slide" data-bs-ride="carousel">
+                    <div class="carousel-inner">
+                        <div class="carousel-item active">
+                            <img src="img/proyecto1.png" class="d-block w-100" alt="Imagen de novedad 1">
+                            <div class="carousel-caption">
+                                <h3>Título del objeto</h3>
+                                <p>
+                                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Minima dolor tenetur
+                                    molestiae expedita sapiente ipsa. Numquam aliquid itaque magni facilis adipisci
+                                    quisquam at ex? Sapiente harum ut eaque aut culpa!
+                                </p>
+                            </div>
+                        </div>
+                        <div class="carousel-item">
+                            <img src="img/proyecto1.png" class="d-block w-100" alt="Imagen de novedad 2">
+                            <div class="carousel-caption">
+                                <h3>Título del objeto</h3>
+                                <p>
+                                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Minima dolor tenetur
+                                    molestiae expedita sapiente ipsa. Numquam aliquid itaque magni facilis adipisci
+                                    quisquam at ex? Sapiente harum ut eaque aut culpa!
+                                </p>
+                            </div>
+                        </div>
+                        <div class="carousel-item">
+                            <img src="img/proyecto1.png" class="d-block w-100" alt="Imagen de novedad 3">
+                            <div class="carousel-caption">
+                                <h3>Título del objeto</h3>
+                                <p>
+                                    Lorem ipsum dolor sit amet consectetur adipisicing elit. Minima dolor tenetur
+                                    molestiae expedita sapiente ipsa. Numquam aliquid itaque magni facilis adipisci
+                                    quisquam at ex? Sapiente harum ut eaque aut culpa!
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="carousel-control-prev" type="button" data-bs-target="#carouselNovedades"
+                        data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Anterior</span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#carouselNovedades"
+                        data-bs-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Siguiente</span>
+                    </button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe"
+        crossorigin="anonymous"></script>
+
+</body>
+</html>

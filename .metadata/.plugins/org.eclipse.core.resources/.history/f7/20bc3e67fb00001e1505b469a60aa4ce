@@ -1,0 +1,135 @@
+package servlets;
+
+import jakarta.servlet.RequestDispatcher;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import models.Alumno;
+import models.ModeloAlumno;
+
+import java.io.IOException;
+import java.util.List;
+
+public class ControladorAlumnos extends HttpServlet {
+	private static final long serialVersionUID = 1L;
+
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        // Leer parámetro del formulario
+        String elComando = request.getParameter("instruccion");
+        // Si no se envía el parámetro, leer alumnos
+        if (elComando == null)
+            elComando = "listar";
+        // Redirigir el flujo de ejecución al método adecuado
+        switch (elComando) {
+            case "listar":
+                obtenerAlumnos(request, response);
+                break;
+            case "insertarBBDD":
+                agregarAlumnos(request, response);
+                break;
+            case "cargar":
+                try {
+                    cargarAlumnos(request, response);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                break;
+            case "actualizarBBDD":
+                try {
+                    actualizarAlumnos(request, response);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                break;
+            case "eliminar":
+                try {
+                    eliminarAlumnos(request, response);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                break;
+            default:
+                obtenerAlumnos(request, response);
+        }
+    }
+
+    //========================================================================================================
+    private void eliminarAlumnos(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        int idAlumno = Integer.parseInt(request.getParameter("idAlumno"));
+        System.out.println("ID del alumno a eliminar: " + idAlumno);
+
+        ModeloAlumno.eliminarAlumno(idAlumno);
+
+        obtenerAlumnos(request, response);
+    }
+
+    //========================================================================================================
+    private void actualizarAlumnos(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        String idalumno = request.getParameter("idalumno");
+        String nombre = request.getParameter("nombre");
+        String apellido = request.getParameter("apellido");
+        String direccion = request.getParameter("direccion");
+        String telefono = request.getParameter("telefono");
+        String email = request.getParameter("email");
+
+        Alumno alumnoActualizado = new Alumno(idalumno, nombre, apellido, direccion, telefono, email);
+
+        ModeloAlumno.actualizarAlumno(alumnoActualizado);
+
+        obtenerAlumnos(request, response);
+    }
+
+    //========================================================================================================
+    private void cargarAlumnos(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        String idalumno = request.getParameter("idalumno");
+        System.out.println("ID del alumno a cargar: " + idalumno);
+
+        Alumno alumno = ModeloAlumno.getAlumno(idalumno);
+
+        request.setAttribute("UpdateAlumno", alumno);
+
+        RequestDispatcher dispatcher = request.getRequestDispatcher("/editarAlumno.jsp");
+        dispatcher.forward(request, response);
+    }
+
+    //========================================================================================================
+    private void agregarAlumnos(HttpServletRequest request, HttpServletResponse response) {
+        try {
+        	String idalumno = request.getParameter("idalumno");
+            String nombre = request.getParameter("nombre");
+            String apellido = request.getParameter("apellido");
+            String direccion = request.getParameter("direccion");
+            String telefono = request.getParameter("telefono");
+            String email = request.getParameter("email");
+
+            Alumno nuevoAlumno = new Alumno(idalumno, nombre, apellido, direccion, telefono, email);
+
+            ModeloAlumno.addAlumno(nuevoAlumno);
+
+            obtenerAlumnos(request, response);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    //========================================================================================================
+    private void obtenerAlumnos(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            List<Alumno> alumnos = ModeloAlumno.getAlumnos();
+            request.setAttribute("ListarAlumnos", alumnos);
+
+            RequestDispatcher dispatcher = request.getRequestDispatcher("/listaAlumnos.jsp");
+            dispatcher.forward(request, response);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    //========================================================================================================
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		doGet(request, response);
+	}
+
+}

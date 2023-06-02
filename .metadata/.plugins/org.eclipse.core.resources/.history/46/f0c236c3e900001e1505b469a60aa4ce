@@ -1,0 +1,227 @@
+package models;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
+
+import util.MYSQLConexion;
+
+public class ModeloLibro {
+
+	//============================================================================
+	public static List<Libro> getLibros() throws Exception {
+		List<Libro> libros = new ArrayList<>();
+		Connection miConexion = null;
+		Statement miStatement = null;
+		ResultSet miResultSet = null;
+
+		try {
+			// Establecer conexión
+			miConexion = MYSQLConexion.getConexion();
+
+			// Crear sentencia SQL
+			String instruccionSQL = "SELECT * FROM libros";
+			miStatement = miConexion.createStatement();
+
+			// Ejecutar SQL
+			miResultSet = miStatement.executeQuery(instruccionSQL);
+
+			// Recorrer el ResultSet obtenido
+			while (miResultSet.next()) {
+				
+				String idlibro = miResultSet.getString("idlibro");
+				String titulo = miResultSet.getString("titulo");
+				String autor = miResultSet.getString("autor");
+				String editorial = miResultSet.getString("ideditorial");
+				int stock = miResultSet.getInt("stock");
+				String estado = miResultSet.getString("estado");
+
+				Libro temporal = new Libro(idlibro, titulo, autor, editorial, stock, estado);
+				libros.add(temporal);
+			}
+		} finally {
+			// Cerrar recursos en el orden inverso a su apertura
+			if (miResultSet != null) {
+				miResultSet.close();
+			}
+			if (miStatement != null) {
+				miStatement.close();
+			}
+			if (miConexion != null) {
+				miConexion.close();
+			}
+		}
+
+		return libros;
+	}
+
+	//============================================================================	
+	public static void addLibro(Libro nuevoLibro) throws Exception {
+		Connection miConexion = null;
+		PreparedStatement miStatement = null;
+
+		try {
+			// Conectar a BD
+			miConexion = MYSQLConexion.getConexion();
+
+			// Crear instrucción que inserte el producto
+			String SQL = "INSERT INTO libros (idlibro, titulo, autor, ideditorial, stock, estado) VALUES (?,?,?,?,?,?)";
+			miStatement = miConexion.prepareStatement(SQL);
+			
+			miStatement.setString(1, nuevoLibro.getIdlibro());
+			miStatement.setString(2, nuevoLibro.getTitulo());
+			miStatement.setString(3, nuevoLibro.getAutor());
+			miStatement.setString(4, nuevoLibro.getEditorial());
+			miStatement.setInt(5, nuevoLibro.getStock());
+			miStatement.setString(6, nuevoLibro.getEstado());
+			System.out.println("Llegué acá oe222");
+			// Ejecutar la instrucción SQL
+			miStatement.execute(SQL);
+			System.out.println("Llegué acá de nuevo");
+		} finally {
+			// Cerrar recursos en el orden inverso a su apertura
+			if (miStatement != null) {
+				miStatement.close();
+			}
+			if (miConexion != null) {
+				miConexion.close();
+			}
+		}
+	}
+
+	//============================================================================	
+	public static Libro getLibro(String codLib) throws Exception {
+		Libro elLibro = null;
+		Connection miConexion = null;
+		PreparedStatement miStatement = null;
+		ResultSet miResulSet = null;
+		String cod = codLib;
+		try {
+			miConexion = MYSQLConexion.getConexion();
+
+			String sql = "SELECT * FROM libros WHERE idlibro = ?";
+
+			miStatement = miConexion.prepareStatement(sql);
+			miStatement.setString(1, cod);
+
+			miResulSet = miStatement.executeQuery();
+
+			if (miResulSet.next()) {
+				String idlibro = miResulSet.getString("idlibro");
+				String titulo = miResulSet.getString("titulo");
+				String autor = miResulSet.getString("autor");
+				String editorial = miResulSet.getString("ideditorial");
+				int stock = miResulSet.getInt("stock");
+				String estado = miResulSet.getString("estado");
+
+				elLibro = new Libro(idlibro, titulo, autor, editorial, stock, estado);
+			} else {
+				throw new Exception("No se encontró el libro con código " + cod);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			// Manejo de excepciones
+		} finally {
+			// Cerrar recursos en el orden inverso de su apertura
+			if (miResulSet != null) {
+				try {
+					miResulSet.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+			if (miStatement != null) {
+				try {
+					miStatement.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+			if (miConexion != null) {
+				try {
+					miConexion.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		return elLibro;
+	}
+
+	//============================================================================	
+	public static void actualizarLibros(Libro libroActualizado) throws Exception {
+		Connection miConexion = null;
+		PreparedStatement miStatement = null;
+
+		try {
+			miConexion = MYSQLConexion.getConexion();
+
+			String sql = "UPDATE libros SET titulo = ?, autor = ?, ideditorial = ?, stock = ?, estado = ? WHERE idlibro = ?";
+			
+			miStatement = miConexion.prepareStatement(sql);
+			miStatement.setString(1, libroActualizado.getTitulo());
+			miStatement.setString(2, libroActualizado.getAutor());
+			miStatement.setString(3, libroActualizado.getEditorial());
+			miStatement.setInt(4, libroActualizado.getStock());
+			miStatement.setString(5, libroActualizado.getEstado());
+			miStatement.setString(6, libroActualizado.getIdlibro());
+
+			int filasActualizadas = miStatement.executeUpdate();
+
+			if (filasActualizadas > 0) {
+				System.out.println("Libro actualizado correctamente.");
+			} else {
+				System.out.println("No se encontró el libro o no se realizó ninguna actualización.");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			// Manejo de excepciones
+		} finally {
+			// Cerrar recursos en el orden inverso de su apertura
+			if (miStatement != null) {
+				try {
+					miStatement.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+			if (miConexion != null) {
+				try {
+					miConexion.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+	}
+
+	//============================================================================
+	public static void eliminarLibro(String codLib) throws Exception {
+		Connection miConexion = null;
+		PreparedStatement miStatement = null;
+
+		try {
+			miConexion = MYSQLConexion.getConexion();
+
+			String sql = "DELETE FROM libros WHERE idlibro IS NULL OR idlibro=?";
+
+			miStatement = miConexion.prepareStatement(sql);
+			miStatement.setString(1, codLib);
+
+			miStatement.executeUpdate();
+		} finally {
+			// Cerrar los recursos (Statement y Connection) en un bloque finally
+			if (miStatement != null) {
+				miStatement.close();
+			}
+			if (miConexion != null) {
+				miConexion.close();
+			}
+		}
+	}
+
+}
